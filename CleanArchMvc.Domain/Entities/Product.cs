@@ -78,9 +78,9 @@ namespace CleanArchMvc.Domain.Entities
                 "Invalid image url, too long, maximum 250 characters"
             );
 
-            DomainExceptionValidation.When(price < 5, "Invalid price value");
+            DomainExceptionValidation.When(price < 0, "Invalid price value");
 
-            DomainExceptionValidation.When(stock < 5, "Invalid stock value");
+            DomainExceptionValidation.When(stock < 0, "Invalid stock value");
 
             DomainExceptionValidation.When(
                 description.Length < 5,

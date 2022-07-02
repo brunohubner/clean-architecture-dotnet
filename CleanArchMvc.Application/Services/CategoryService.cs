@@ -6,7 +6,7 @@ using CleanArchMvc.Domain.Entities;
 
 namespace CleanArchMvc.Application.Services
 {
-    class CategoryService : ICategoryService
+    public class CategoryService : ICategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
