@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace CleanArchMvc.Applications.DTOs
+namespace CleanArchMvc.Application.DTOs
 {
     public class CategoryDTO
     {
