@@ -4,12 +4,12 @@ namespace CleanArchMvc.WebUI.Controllers;
 
 public class HomeController : Controller
 {
-    public async Task<ActionResult> Index()
+    public IActionResult Index()
     {
         return View();
     }
 
-    public async Task<ActionResult> Privacy()
+    public IActionResult Privacy()
     {
         return View();
     }
