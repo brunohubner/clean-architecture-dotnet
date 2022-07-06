@@ -1,15 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using CleanArchMvc.Application.Interfaces;
+using CleanArchMvc.Application.DTOs;
 
 namespace CleanArchMvc.WebUI.Controllers;
 
 public class ProductsController : Controller
 {
     private readonly IProductService _productService;
+    private readonly ICategoryService _categoryService;
 
-    public ProductsController(IProductService productService)
+    public ProductsController(
+        IProductService productService,
+        ICategoryService categoryService
+    )
     {
         _productService = productService;
+        _categoryService = categoryService;
     }
 
     [HttpGet]
@@ -17,5 +24,68 @@ public class ProductsController : Controller
     {
         var products = await _productService.GetAll();
         return View(products);
+    }
+
+    // TODO: To solve the create product bug.
+    [HttpGet]
+    public async Task<IActionResult> Create()
+    {
+        ViewBag.CategoryId =
+            new SelectList(await _categoryService.GetAll(), "Id", "Name");
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create(ProductDTO productDTO)
+    {
+        if (ModelState.IsValid)
+        {
+            await _productService.Create(productDTO);
+            return RedirectToAction(nameof(Index));
+        }
+        return View(productDTO);
+    }
+
+    // TODO: To solve the edit product bug.
+    [HttpGet]
+    public async Task<IActionResult> Edit(int? id)
+    {
+        if (id == null) return NotFound();
+        var productDTO = await _productService.GetById(id);
+
+        if (productDTO == null) return NotFound();
+        var categories = await _categoryService.GetAll();
+
+        ViewBag.CategoryId =
+            new SelectList(categories, "Id", "Name", productDTO.CategoryId);
+        return View(productDTO);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Edit(ProductDTO productDTO)
+    {
+        if (ModelState.IsValid)
+        {
+            await _productService.Update(productDTO);
+            return RedirectToAction(nameof(Index));
+        }
+        return View(productDTO);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Delete(int? id)
+    {
+        if (id == null) return NotFound();
+        var productDTO = await _productService.GetById(id);
+
+        if (productDTO == null) return NotFound();
+        return View(productDTO);
+    }
+
+    [HttpPost, ActionName("Delete")]
+    public async Task<IActionResult> DeleteConfirmed(int? id)
+    {
+        await _productService.Remove(id);
+        return RedirectToAction(nameof(Index));
     }
 }
