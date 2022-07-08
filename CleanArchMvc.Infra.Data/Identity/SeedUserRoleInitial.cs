@@ -27,6 +27,15 @@ namespace CleanArchMvc.Infra.Data.Identity
                 IdentityResult roleResult = _roleMananger
                     .CreateAsync(role).Result;
             }
+
+            if (!_roleMananger.RoleExistsAsync("Admin").Result)
+            {
+                IdentityRole role = new IdentityRole();
+                role.Name = "Admin";
+                role.NormalizedName = "ADMIN";
+                IdentityResult roleResult = _roleMananger
+                    .CreateAsync(role).Result;
+            }
         }
 
         public async void SeedUsers()

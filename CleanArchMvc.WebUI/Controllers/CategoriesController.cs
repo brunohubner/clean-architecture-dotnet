@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using CleanArchMvc.Application.Interfaces;
 using CleanArchMvc.Application.DTOs;
 
 namespace CleanArchMvc.WebUI.Controllers;
 
+[Authorize]
 public class CategoriesController : Controller
 {
     private readonly ICategoryService _categoryService;

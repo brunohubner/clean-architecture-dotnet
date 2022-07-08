@@ -17,3 +17,11 @@ dotnet ef --startup-project ../CleanArchMvc.WebUI/ database update
 ```
 dotnet add package <Package.Name>
 ```
+
+user@localhost
+
+@User12345
+
+admin@localhost
+
+@Admin12345

@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using CleanArchMvc.Application.Interfaces;
 using CleanArchMvc.Application.DTOs;
-using Microsoft.AspNetCore.Hosting;
-using System.IO;
 
 namespace CleanArchMvc.WebUI.Controllers;
 
@@ -78,6 +77,7 @@ public class ProductsController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int? id)
     {
         if (id == null) return NotFound();
