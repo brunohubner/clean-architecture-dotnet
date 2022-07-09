@@ -72,7 +72,8 @@ namespace CleanArchMvc.API.Controllers
             };
 
             var privateKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
+                Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"])
+            );
 
             var credentials = new SigningCredentials(
                 privateKey,
@@ -87,7 +88,7 @@ namespace CleanArchMvc.API.Controllers
                 claims: claims,
                 expires: expiration,
                 signingCredentials: credentials
-                );
+            );
 
             return new UserToken()
             {
