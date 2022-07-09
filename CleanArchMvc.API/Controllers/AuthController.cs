@@ -9,20 +9,39 @@ using System.Text;
 
 namespace CleanArchMvc.API.Controllers
 {
-    [Route("api/v1")]
+    [Route("api/v1/auth")]
     [ApiController]
-    public class TokenController : ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly IAuthenticate _authentication;
         private readonly IConfiguration _configuration;
 
-        public TokenController(
+        public AuthController(
             IAuthenticate authentication,
             IConfiguration configuration
         )
         {
             _authentication = authentication;
             _configuration = configuration;
+        }
+
+        [HttpPost("register")]
+        public async Task<ActionResult> Register(
+            [FromBody] RegisterModel userInfo
+        )
+        {
+            var result = await _authentication.RegisterUser(
+                userInfo.Email,
+                userInfo.Password
+            );
+
+            if (!result)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid Register attempt.");
+                return BadRequest(ModelState);
+            }
+
+            return Ok($"User {userInfo.Email} was create successfully");
         }
 
         [HttpPost("login")]
