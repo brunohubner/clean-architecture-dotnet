@@ -6,9 +6,9 @@ namespace CleanArchMvc.WebUI.Controllers;
 
 public class AccountController : Controller
 {
-    private readonly IAutheticate _authentication;
+    private readonly IAuthenticate _authentication;
 
-    public AccountController(IAutheticate authentication)
+    public AccountController(IAuthenticate authentication)
     {
         _authentication = authentication;
     }
