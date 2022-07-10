@@ -40,7 +40,8 @@ public class ProductDTO
 
     public int CategoryId { get; set; }
 
+    [NotMapped]
     [JsonIgnore]
-    public Category Category { get; set; }
+    public Category? Category { get; set; }
 
 }
