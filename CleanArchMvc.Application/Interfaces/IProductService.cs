@@ -1,13 +1,12 @@
 using CleanArchMvc.Application.DTOs;
 
-namespace CleanArchMvc.Application.Interfaces
+namespace CleanArchMvc.Application.Interfaces;
+
+public interface IProductService
 {
-    public interface IProductService
-    {
-        Task<IEnumerable<ProductDTO>> GetAll();
-        Task<ProductDTO> GetById(int? id);
-        Task Create(ProductDTO productDto);
-        Task Update(ProductDTO productDto);
-        Task Remove(int? id);
-    }
+    Task<IEnumerable<ProductDTO>> GetAll();
+    Task<ProductDTO> GetById(int? id);
+    Task Create(ProductDTO productDto);
+    Task Update(ProductDTO productDto);
+    Task Remove(int? id);
 }

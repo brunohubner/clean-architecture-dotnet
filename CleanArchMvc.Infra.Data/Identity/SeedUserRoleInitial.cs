@@ -1,83 +1,82 @@
 using CleanArchMvc.Domain.Account;
 using Microsoft.AspNetCore.Identity;
 
-namespace CleanArchMvc.Infra.Data.Identity
+namespace CleanArchMvc.Infra.Data.Identity;
+
+public class SeedUserRoleInitial : ISeedUserRoleInitial
 {
-    public class SeedUserRoleInitial : ISeedUserRoleInitial
+    private readonly UserManager<ApplicationUser> _userMananger;
+    private readonly RoleManager<IdentityRole> _roleMananger;
+
+    public SeedUserRoleInitial(
+        UserManager<ApplicationUser> userManager,
+        RoleManager<IdentityRole> roleManager
+    )
     {
-        private readonly UserManager<ApplicationUser> _userMananger;
-        private readonly RoleManager<IdentityRole> _roleMananger;
+        _userMananger = userManager;
+        _roleMananger = roleManager;
+    }
 
-        public SeedUserRoleInitial(
-            UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager
-        )
+    public void SeedRoles()
+    {
+        if (!_roleMananger.RoleExistsAsync("User").Result)
         {
-            _userMananger = userManager;
-            _roleMananger = roleManager;
+            IdentityRole role = new IdentityRole();
+            role.Name = "User";
+            role.NormalizedName = "USER";
+            IdentityResult roleResult = _roleMananger
+                .CreateAsync(role).Result;
         }
 
-        public void SeedRoles()
+        if (!_roleMananger.RoleExistsAsync("Admin").Result)
         {
-            if (!_roleMananger.RoleExistsAsync("User").Result)
-            {
-                IdentityRole role = new IdentityRole();
-                role.Name = "User";
-                role.NormalizedName = "USER";
-                IdentityResult roleResult = _roleMananger
-                    .CreateAsync(role).Result;
-            }
+            IdentityRole role = new IdentityRole();
+            role.Name = "Admin";
+            role.NormalizedName = "ADMIN";
+            IdentityResult roleResult = _roleMananger
+                .CreateAsync(role).Result;
+        }
+    }
 
-            if (!_roleMananger.RoleExistsAsync("Admin").Result)
+    public async void SeedUsers()
+    {
+        if (_userMananger.FindByEmailAsync("user@localhost").Result == null)
+        {
+            ApplicationUser user = new ApplicationUser();
+            user.UserName = "user@localhost";
+            user.Email = "user@localhost";
+            user.NormalizedUserName = "USER@LOCALHOST";
+            user.NormalizedEmail = "USER@LOCALHOST";
+            user.EmailConfirmed = true;
+            user.LockoutEnabled = false;
+            user.SecurityStamp = Guid.NewGuid().ToString();
+
+            IdentityResult result = _userMananger
+                .CreateAsync(user, "@User12345").Result;
+
+            if (result.Succeeded)
             {
-                IdentityRole role = new IdentityRole();
-                role.Name = "Admin";
-                role.NormalizedName = "ADMIN";
-                IdentityResult roleResult = _roleMananger
-                    .CreateAsync(role).Result;
+                _userMananger.AddToRoleAsync(user, "User").Wait();
             }
         }
 
-        public async void SeedUsers()
+        if (_userMananger.FindByEmailAsync("admin@localhost").Result == null)
         {
-            if (_userMananger.FindByEmailAsync("user@localhost").Result == null)
+            ApplicationUser user = new ApplicationUser();
+            user.UserName = "admin@localhost";
+            user.Email = "admin@localhost";
+            user.NormalizedUserName = "ADMIN@LOCALHOST";
+            user.NormalizedEmail = "ADMIN@LOCALHOST";
+            user.EmailConfirmed = true;
+            user.LockoutEnabled = false;
+            user.SecurityStamp = Guid.NewGuid().ToString();
+
+            IdentityResult result = _userMananger
+                .CreateAsync(user, "@Admin12345").Result;
+
+            if (result.Succeeded)
             {
-                ApplicationUser user = new ApplicationUser();
-                user.UserName = "user@localhost";
-                user.Email = "user@localhost";
-                user.NormalizedUserName = "USER@LOCALHOST";
-                user.NormalizedEmail = "USER@LOCALHOST";
-                user.EmailConfirmed = true;
-                user.LockoutEnabled = false;
-                user.SecurityStamp = Guid.NewGuid().ToString();
-
-                IdentityResult result = _userMananger
-                    .CreateAsync(user, "@User12345").Result;
-
-                if (result.Succeeded)
-                {
-                    _userMananger.AddToRoleAsync(user, "User").Wait();
-                }
-            }
-
-            if (_userMananger.FindByEmailAsync("admin@localhost").Result == null)
-            {
-                ApplicationUser user = new ApplicationUser();
-                user.UserName = "admin@localhost";
-                user.Email = "admin@localhost";
-                user.NormalizedUserName = "ADMIN@LOCALHOST";
-                user.NormalizedEmail = "ADMIN@LOCALHOST";
-                user.EmailConfirmed = true;
-                user.LockoutEnabled = false;
-                user.SecurityStamp = Guid.NewGuid().ToString();
-
-                IdentityResult result = _userMananger
-                    .CreateAsync(user, "@Admin12345").Result;
-
-                if (result.Succeeded)
-                {
-                    _userMananger.AddToRoleAsync(user, "Admin").Wait();
-                }
+                _userMananger.AddToRoleAsync(user, "Admin").Wait();
             }
         }
     }

@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace CleanArchMvc.Infra.Data.Identity
+namespace CleanArchMvc.Infra.Data.Identity;
+
+public class ApplicationUser : IdentityUser
 {
-    public class ApplicationUser : IdentityUser
-    {
-        //
-    }
+    //
 }

@@ -1,4 +1,3 @@
-namespace CleanArchMvc.Application.Products.Commands
-{
-    public class ProductCreateCommand : ProductCommand { }
-}
+namespace CleanArchMvc.Application.Products.Commands;
+
+public class ProductCreateCommand : ProductCommand { }

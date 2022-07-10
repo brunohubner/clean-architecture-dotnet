@@ -3,81 +3,80 @@ using Microsoft.AspNetCore.Authorization;
 using CleanArchMvc.Application.Interfaces;
 using CleanArchMvc.Application.DTOs;
 
-namespace CleanArchMvc.API.Controllers
+namespace CleanArchMvc.API.Controllers;
+
+[Route("api/v1/categories")]
+[ApiController]
+[Authorize]
+public class CategoriesController : ControllerBase
 {
-    [Route("api/v1/categories")]
-    [ApiController]
-    [Authorize]
-    public class CategoriesController : ControllerBase
+    private readonly ICategoryService _categoryService;
+
+    public CategoriesController(ICategoryService categoryService)
     {
-        private readonly ICategoryService _categoryService;
+        _categoryService = categoryService;
+    }
 
-        public CategoriesController(ICategoryService categoryService)
-        {
-            _categoryService = categoryService;
-        }
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetAll()
+    {
+        var categories = await _categoryService.GetAll();
+        if (categories == null)
+            return NotFound("Categories not found");
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetAll()
-        {
-            var categories = await _categoryService.GetAll();
-            if (categories == null)
-                return NotFound("Categories not found");
+        return Ok(categories);
+    }
 
-            return Ok(categories);
-        }
+    [HttpGet("{id:int}", Name = "GetCategoryById")]
+    public async Task<ActionResult<CategoryDTO>> GetById(int id)
+    {
+        var category = await _categoryService.GetById(id);
+        if (category == null)
+            return NotFound("Category not found");
 
-        [HttpGet("{id:int}", Name = "GetCategoryById")]
-        public async Task<ActionResult<CategoryDTO>> GetById(int id)
-        {
-            var category = await _categoryService.GetById(id);
-            if (category == null)
-                return NotFound("Category not found");
+        return Ok(category);
+    }
 
-            return Ok(category);
-        }
+    [HttpPost]
+    public async Task<ActionResult> Create(
+        [FromBody] CategoryDTO categoryDto
+    )
+    {
+        if (categoryDto == null)
+            return BadRequest("Invalid data");
+        await _categoryService.Create(categoryDto);
 
-        [HttpPost]
-        public async Task<ActionResult> Create(
-            [FromBody] CategoryDTO categoryDto
-        )
-        {
-            if (categoryDto == null)
-                return BadRequest("Invalid data");
-            await _categoryService.Create(categoryDto);
+        return new CreatedAtRouteResult(
+            "GetCategoryById",
+            new { id = categoryDto.Id },
+            categoryDto
+        );
+    }
 
-            return new CreatedAtRouteResult(
-                "GetCategoryById",
-                new { id = categoryDto.Id },
-                categoryDto
-            );
-        }
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult> Update(
+        int id,
+        [FromBody] CategoryDTO categoryDto
+    )
+    {
+        if (categoryDto == null)
+            return BadRequest("Invalid data");
 
-        [HttpPut("{id:int}")]
-        public async Task<ActionResult> Update(
-            int id,
-            [FromBody] CategoryDTO categoryDto
-        )
-        {
-            if (categoryDto == null)
-                return BadRequest("Invalid data");
+        categoryDto.Id = id;
+        await _categoryService.Update(categoryDto);
 
-            categoryDto.Id = id;
-            await _categoryService.Update(categoryDto);
+        return Ok(categoryDto);
+    }
 
-            return Ok(categoryDto);
-        }
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult> Remove(int id)
+    {
+        var category = await _categoryService.GetById(id);
 
-        [HttpDelete("{id:int}")]
-        public async Task<ActionResult> Remove(int id)
-        {
-            var category = await _categoryService.GetById(id);
+        if (category == null)
+            return NotFound("Category not found");
 
-            if (category == null)
-                return NotFound("Category not found");
-
-            await _categoryService.Remove(id);
-            return Ok(category);
-        }
+        await _categoryService.Remove(id);
+        return Ok(category);
     }
 }
