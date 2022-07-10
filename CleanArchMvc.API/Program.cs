@@ -1,34 +1,21 @@
-using CleanArchMvc.Infra.IoC;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-builder.Services.AddInfrastructureAPI(builder.Configuration);
-builder.Services.AddInfrastructureJWT(builder.Configuration);
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-app.UseStaticFiles();
-
-if (app.Environment.IsDevelopment())
+namespace CleanArchMvc.API
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
+    public class Program
+    {
+        public static void Main(string[] args)
         {
-            c.InjectStylesheet("/swagger-ui/SwaggerDark.css");
+            CreateHostBuilder(args).Build().Run();
         }
-    );
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
+    }
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
